@@ -1,5 +1,5 @@
 ---
-const currentYear = new Date().getFullYear()
+const currentYear = new Date().getFullYear();
 ---
 
 <footer
@@ -17,6 +17,11 @@ const currentYear = new Date().getFullYear()
       class="flex flex-wrap items-center mt-3 text-sm font-medium dark:text-white/90 sm:mt-0"
     >
       <li>
+        <span id="visitor-counter" class="text-sm me-4 md:me-6"
+          >Cargando visitas...</span
+        >
+      </li>
+      <li>
         <a href="/#sobre-mi" class="hover:underline me-4 md:me-6">Sobre mí</a>
       </li>
       <li>
@@ -27,3 +32,27 @@ const currentYear = new Date().getFullYear()
     </ul>
   </div>
 </footer>
+
+<script>
+  const updateCounter = async () => {
+    const counterElement = document.getElementById("visitor-counter");
+    if (!counterElement) return;
+
+    try {
+      const response = await fetch(
+        "https://llvesvk0d4.execute-api.us-east-1.amazonaws.com/visit",
+        {
+          method: "POST",
+        }
+      );
+      const data = await response.json();
+      counterElement.innerText = `Visitas: ${data.count}`;
+    } catch (error) {
+      console.error("Error fetching visitor count:", error);
+      counterElement.innerText = "Visitas: --";
+    }
+  };
+
+  // Runs on initial load and View Transitions navigation
+  document.addEventListener("astro:page-load", updateCounter);
+</script>
